@@ -1,0 +1,118 @@
+CREATE DATABASE GOIN;
+USE GOIN;
+CREATE TABLE IF NOT EXISTS Pais(
+pais_id int not null auto_increment,
+Nombre varchar(50) not null,
+primary key(pais_id)
+);
+CREATE TABLE IF NOT EXISTS Provincia(
+provincia_id int not null auto_increment,
+Nombre varchar(50) not null,
+pais_id int,
+primary key(provincia_id),
+foreign key(pais_id) references Pais(pais_id)
+);
+CREATE TABLE IF NOT EXISTS Ciudad(
+ciudad_id int not null auto_increment,
+nombre varchar(50) not null,
+provincia_id int,
+primary key(ciudad_id),
+foreign key(provincia_id) references Provincia(provincia_id)
+);
+CREATE TABLE IF NOT EXISTS Categorias(
+categoria_id int not null auto_increment,
+nombre varchar(50) not null,
+primary key(categoria_id)
+);
+CREATE TABLE IF NOT EXISTS Plataforma(
+plataforma_id int not null auto_increment,
+nombrePlataforma varchar(50) not null,
+tipoPlataforma varchar(50) not null,
+primary key(plataforma_id)
+);
+CREATE TABLE IF NOT EXISTS Vencimientos(
+vencimiento_id int not null auto_increment,
+fecha date not null,
+primary key(vencimiento_id)
+);
+CREATE TABLE IF NOT EXISTS Empleado(
+empleado_id int not null auto_increment,
+nombre varchar(50) not null,
+apellido varchar(50) not null,
+cargo varchar(50) not null,
+telefono int not null,
+email varchar(50) not null,
+ciudad_id int,
+primary key(empleado_id),
+foreign key(ciudad_id) references Ciudad(Ciudad_id)
+);
+CREATE TABLE IF NOT EXISTS Empresa(
+empresa_id int not null auto_increment,
+razonSocial varchar(50) not null,
+email varchar(50) not null,
+telefono int not null,
+direccion varchar(50) not null,
+empleado_id int,
+ciudad_id int,
+primary key(empresa_id),
+foreign key(empleado_id) references Empleado(empleado_id),
+foreign key(ciudad_id) references Ciudad(ciudad_id)
+);
+CREATE TABLE IF NOT EXISTS Marca(
+marca_id int not null auto_increment,
+nombre varchar(50),
+categoria_id int,
+empresa_id int,
+primary key(marca_id),
+foreign key(categoria_id) references Categorias(categoria_id),
+foreign key(empresa_id) references Empresa(empresa_id)
+);
+CREATE TABLE IF NOT EXISTS Publicacion(
+publicacion_id int not null auto_increment,
+fecha date,
+nombrePublicacion varchar(50) not null,
+empleado_id int,
+primary key(publicacion_id),
+foreign key(empleado_id) references Empleado(empleado_id)
+);
+/*TABLA PUENTE ENTRE PUBLICACION Y PLATAFORMA */
+CREATE TABLE IF NOT EXISTS PublicacionPlataforma(
+publicacion_plataforma_id int not null auto_increment,
+publicacion_id int,
+plataforma_id int,
+fechaPublicacion date,
+primary key(publicacion_plataforma_id),
+foreign key(publicacion_id) references Publicacion(publicacion_id),
+foreign key(plataforma_id) references Plataforma(plataforma_id)
+);
+/*TABLA PUENTE ENTRE PLATAFORMA Y PAIS */
+CREATE TABLE IF NOT EXISTS PlataformaPais(
+plataforma_pais_id int not null auto_increment,
+pais_id int,
+plataforma_id int,
+estado_plataforma varchar(30) not null,
+primary key(plataforma_pais_id),
+foreign key(pais_id) references Pais(pais_id),
+foreign key(plataforma_id) references Plataforma(plataforma_id)
+);
+CREATE TABLE IF NOT EXISTS Promocion(
+promocion_id int not null auto_increment,
+nombre varchar(50) not null,
+fechaInicioPromocion date,
+estado_promocion varchar(30) not null,
+vencimiento_id int,
+marca_id int,
+primary key(promocion_id),
+foreign key(vencimiento_id) references Vencimientos(vencimiento_id),
+foreign key(marca_id) references Marca(marca_id)
+);
+/*TABLA PUENTE ENTRE Publicacion Y Promocion */
+CREATE TABLE IF NOT EXISTS PublicacionPromocion(
+publicacion_promocion_id int not null auto_increment,
+publicacion_id int,
+promocion_id int,
+fecha date,
+primary key(publicacion_promocion_id),
+foreign key(publicacion_id) references Publicacion(publicacion_id),
+foreign key(promocion_id) references Promocion(promocion_id)
+);
